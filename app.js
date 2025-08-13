@@ -257,7 +257,7 @@ class CaboVerdeMap {
       submitBtn.disabled = true;
 
       // Send to Google Sheets (use form-encoded to avoid CORS preflight)
-      const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+      const response = await fetch(process.env.GOOGLE_SCRIPT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",

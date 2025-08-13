@@ -1,0 +1,106 @@
+// Configuration file for the Cabo Verde Help Map
+
+// Google Sheets configuration
+// To set this up:
+// 1. Create a Google Sheet with columns: name, description, category, latitude, longitude, timestamp
+// 2. Go to Google Apps Script (script.google.com)
+// 3. Create a new project and paste the provided Apps Script code
+// 4. Deploy as web app with "Anyone" access
+// 5. Replace the URL below with your deployed web app URL
+
+const CONFIG = {
+  // Map configuration
+  MAP_STYLE: "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json", // default vector style
+  RASTER_SATELLITE_STYLE:
+    "https://api.maptiler.com/maps/satellite/style.json?key=kd4SrivtZ33mtbU6naqs",
+  // Local sample data configuration
+  USE_SAMPLE_DATA: false,
+  // Optional shared secret to protect write access. Set the same value in Apps Script API_TOKEN.
+  WRITE_TOKEN: "",
+  INITIAL_VIEW_STATE: {
+    longitude: -24.0, // Centered on Cabo Verde
+    latitude: 16.0,
+    zoom: 8,
+    pitch: 0,
+    bearing: 0,
+  },
+
+  // Category colors for map markers
+  CATEGORY_COLORS: {
+    hospital: [220, 53, 69, 180], // Red
+    escuela: [40, 167, 69, 180], // Green
+    centro_comunitario: [255, 193, 7, 180], // Yellow
+    refugio: [108, 117, 125, 180], // Gray
+    agua: [23, 162, 184, 180], // Cyan
+    alimentos: [255, 133, 27, 180], // Orange
+    otro: [111, 66, 193, 180], // Purple
+  },
+
+  // Default marker color for unknown categories
+  DEFAULT_COLOR: [108, 117, 125, 180], // Gray
+
+  // Marker size
+  MARKER_SIZE: 100,
+};
+
+// Category display names (for tooltips and UI)
+const CATEGORY_NAMES = {
+  hospital: "Hospital",
+  escuela: "Escuela",
+  centro_comunitario: "Centro Comunitario",
+  refugio: "Refugio",
+  agua: "Fuente de Agua",
+  alimentos: "Distribución de Alimentos",
+  otro: "Otro",
+};
+
+const DATA = [
+  {
+    name: "Hospital Agostinho Neto",
+    description: "Principal hospital público de Praia",
+    category: "hospital",
+    latitude: 14.9177,
+    longitude: -23.5092,
+    timestamp: "2024-01-15T10:00:00.000Z",
+  },
+  {
+    name: "Escola Secundária Domingos Ramos",
+    description: "Escuela secundaria en el centro de Praia",
+    category: "escuela",
+    latitude: 14.9208,
+    longitude: -23.5087,
+    timestamp: "2024-01-15T10:05:00.000Z",
+  },
+  {
+    name: "Centro Comunitário Achada Santo António",
+    description: "Centro comunitario para eventos y reuniones",
+    category: "centro_comunitario",
+    latitude: 14.9156,
+    longitude: -23.5134,
+    timestamp: "2024-01-15T10:10:00.000Z",
+  },
+  {
+    name: "Refugio Temporário Plateau",
+    description: "Refugio temporal para emergencias",
+    category: "refugio",
+    latitude: 14.9189,
+    longitude: -23.5098,
+    timestamp: "2024-01-15T10:15:00.000Z",
+  },
+  {
+    name: "Fonte de Água Pública",
+    description: "Fuente de agua potable pública",
+    category: "agua",
+    latitude: 14.9145,
+    longitude: -23.5078,
+    timestamp: "2024-01-15T10:20:00.000Z",
+  },
+  {
+    name: "Centro de Distribución de Alimentos",
+    description: "Punto de distribución de alimentos de emergencia",
+    category: "alimentos",
+    latitude: 14.9201,
+    longitude: -23.5112,
+    timestamp: "2024-01-15T10:25:00.000Z",
+  },
+];
