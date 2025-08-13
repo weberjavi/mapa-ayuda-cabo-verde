@@ -210,18 +210,9 @@ function createResponse(success, data, error = null) {
     error: success ? null : error || data,
   };
 
-  const output = ContentService.createTextOutput(
-    JSON.stringify(response)
-  ).setMimeType(ContentService.MimeType.JSON);
-
-  // Manually add CORS headers
-  const html = HtmlService.createHtmlOutput("")
-    .addMetaTag("Access-Control-Allow-Origin", "*")
-    .addMetaTag("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-    .addMetaTag("Access-Control-Allow-Headers", "Content-Type");
-  // Workaround: Apps Script web apps do not support setting arbitrary headers on JSON output,
-  // but for most browsers simple requests will work. Keep doOptions for preflight.
-  return output;
+  return ContentService.createTextOutput(JSON.stringify(response)).setMimeType(
+    ContentService.MimeType.JSON
+  );
 }
 
 /**

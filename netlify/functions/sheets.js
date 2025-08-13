@@ -1,7 +1,7 @@
 // Netlify Function: Proxy Google Apps Script with CORS and server-side token injection
 module.exports.handler = async function (event) {
   const sheetsUrl = process.env.GOOGLE_SCRIPT_URL;
-  const writeToken = process.env.WRITE_TOKEN || "";
+  // const writeToken = process.env.WRITE_TOKEN || "";
 
   if (!sheetsUrl) {
     return {
