@@ -79,38 +79,19 @@ class CaboVerdeMap {
         return;
       }
 
-      // JSONP read from Apps Script endpoint to avoid CORS
-      await new Promise((resolve, reject) => {
-        const callbackName = `onSheetData_${Date.now()}`;
-        window[callbackName] = (result) => {
-          try {
-            if (result && result.success) {
-              this.data = result.data || [];
-              this.updateMapLayers();
-              resolve();
-            } else {
-              reject(
-                new Error(
-                  result && result.error ? result.error : "Invalid response"
-                )
-              );
-            }
-          } finally {
-            delete window[callbackName];
-            script &&
-              script.parentNode &&
-              script.parentNode.removeChild(script);
-          }
-        };
-        const script = document.createElement("script");
-        script.src = `${CONFIG.GOOGLE_SCRIPT_URL}?action=getData&callback=${callbackName}`;
-        script.onerror = () => {
-          delete window[callbackName];
-          script && script.parentNode && script.parentNode.removeChild(script);
-          reject(new Error("JSONP request failed"));
-        };
-        document.body.appendChild(script);
-      });
+      // Fetch via Netlify Function proxy (no CORS issues)
+      const response = await fetch("/.netlify/functions/sheets?action=getData");
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const result = await response.json();
+      if (result && result.success) {
+        this.data = result.data || [];
+        this.updateMapLayers();
+      } else {
+        throw new Error(
+          (result && result.error) || "Failed to load data from proxy"
+        );
+      }
     } catch (error) {
       console.error("Error loading data:", error);
       this.data = [];
@@ -256,8 +237,8 @@ class CaboVerdeMap {
       submitBtn.textContent = "Guardando...";
       submitBtn.disabled = true;
 
-      // Send to Google Sheets (use form-encoded to avoid CORS preflight)
-      const response = await fetch(process.env.GOOGLE_SCRIPT_URL, {
+      // Send via Netlify Function proxy
+      const response = await fetch("/.netlify/functions/sheets", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
@@ -280,7 +261,7 @@ class CaboVerdeMap {
         // Show success message
         this.showMessage("Ubicación agregada exitosamente", "success");
       } else {
-        // Fall back: refresh via JSONP to reflect server state (no CORS read)
+        // Refresh via proxy read to reflect server state
         await this.loadData();
         if (result && result.error) throw new Error(result.error);
       }
