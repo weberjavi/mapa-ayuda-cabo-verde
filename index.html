@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mapa de Ayuda - Cabo Verde</title>
+
+    <!-- MapLibre GL CSS -->
+    <link
+      href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="map-container">
+      <div id="map"></div>
+
+      <!-- Basemap toggle -->
+      <div class="basemap-toggle">
+        <button id="toggle-basemap" class="btn btn-secondary">Satélite</button>
+      </div>
+
+      <!-- Loading indicator -->
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Cargando datos...</p>
+      </div>
+
+      <!-- Form modal -->
+      <div id="form-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Agregar Nueva Ubicación</h2>
+            <span class="close">&times;</span>
+          </div>
+          <form id="location-form">
+            <div class="form-group">
+              <label for="name">Nombre:</label>
+              <input type="text" id="name" name="name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="description">Descripción:</label>
+              <textarea id="description" name="description" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="category">Categoría:</label>
+              <select id="category" name="category" required>
+                <option value="">Seleccionar categoría</option>
+                <option value="hospital">Hospital</option>
+                <option value="escuela">Escuela</option>
+                <option value="centro_comunitario">Centro Comunitario</option>
+                <option value="refugio">Refugio</option>
+                <option value="agua">Fuente de Agua</option>
+                <option value="alimentos">Distribución de Alimentos</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="latitude">Latitud:</label>
+              <input
+                type="number"
+                id="latitude"
+                name="latitude"
+                step="any"
+                readonly
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="longitude">Longitud:</label>
+              <input
+                type="number"
+                id="longitude"
+                name="longitude"
+                step="any"
+                readonly
+              />
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="cancel-btn">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <div id="instructions" class="instructions">
+        <p>
+          <strong>Instrucciones:</strong> Haz doble clic en cualquier lugar del
+          mapa para agregar una nueva ubicación.
+        </p>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+    <script src="sample-data.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
