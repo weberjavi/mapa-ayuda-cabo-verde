@@ -123,56 +123,7 @@ class CaboVerdeMap {
 
   updateMapLayers() {
     if (!this.overlay && !this.deck) return;
-    const DATA = [
-      {
-        name: "Hospital Agostinho Neto",
-        description: "Principal hospital público de Praia",
-        category: "hospital",
-        latitude: 14.9177,
-        longitude: -23.5092,
-        timestamp: "2024-01-15T10:00:00.000Z",
-      },
-      {
-        name: "Escola Secundária Domingos Ramos",
-        description: "Escuela secundaria en el centro de Praia",
-        category: "escuela",
-        latitude: 14.9208,
-        longitude: -23.5087,
-        timestamp: "2024-01-15T10:05:00.000Z",
-      },
-      {
-        name: "Centro Comunitário Achada Santo António",
-        description: "Centro comunitario para eventos y reuniones",
-        category: "centro_comunitario",
-        latitude: 14.9156,
-        longitude: -23.5134,
-        timestamp: "2024-01-15T10:10:00.000Z",
-      },
-      {
-        name: "Refugio Temporário Plateau",
-        description: "Refugio temporal para emergencias",
-        category: "refugio",
-        latitude: 14.9189,
-        longitude: -23.5098,
-        timestamp: "2024-01-15T10:15:00.000Z",
-      },
-      {
-        name: "Fonte de Água Pública",
-        description: "Fuente de agua potable pública",
-        category: "agua",
-        latitude: 14.9145,
-        longitude: -23.5078,
-        timestamp: "2024-01-15T10:20:00.000Z",
-      },
-      {
-        name: "Centro de Distribución de Alimentos",
-        description: "Punto de distribución de alimentos de emergencia",
-        category: "alimentos",
-        latitude: 14.9201,
-        longitude: -23.5112,
-        timestamp: "2024-01-15T10:25:00.000Z",
-      },
-    ];
+
     const scatterplotLayer = new deck.ScatterplotLayer({
       id: "locations",
       data: this.data,
