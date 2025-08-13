@@ -4,6 +4,8 @@
 
 // Configuration
 const SHEET_NAME = "Locations"; // Name of the sheet tab
+const API_TOKEN =
+  PropertiesService.getScriptProperties().getProperty("API_TOKEN") || "";
 const HEADERS = [
   "name",
   "description",
@@ -18,10 +20,24 @@ const HEADERS = [
  */
 function doGet(e) {
   try {
-    const action = e.parameter.action;
+    const action = e.parameter && e.parameter.action;
 
     if (action === "getData") {
-      return getData();
+      // Support JSONP when callback is provided
+      const resp = getData(); // ContentService JSON output
+      const callback = e.parameter && e.parameter.callback;
+      if (callback) {
+        const json = resp.getContent();
+        // Sanitize callback to reduce XSS risk
+        const safe =
+          String(callback)
+            .replace(/[^\w$.]/g, "")
+            .slice(0, 64) || "callback";
+        return ContentService.createTextOutput(`${safe}(${json})`).setMimeType(
+          ContentService.MimeType.JAVASCRIPT
+        );
+      }
+      return resp;
     }
 
     return createResponse(false, "Invalid action");
@@ -36,11 +52,26 @@ function doGet(e) {
  */
 function doPost(e) {
   try {
-    const requestData = JSON.parse(e.postData.contents);
-    const action = requestData.action;
+    let action = "";
+    let payload = {};
+    if (e.postData && e.postData.type === "application/json") {
+      const requestData = JSON.parse(e.postData.contents);
+      action = requestData.action;
+      payload = requestData.data || {};
+    } else {
+      const params = e.parameter || {};
+      action = params.action;
+      if (params.data) {
+        try {
+          payload = JSON.parse(params.data);
+        } catch (err) {
+          payload = {};
+        }
+      }
+    }
 
     if (action === "addLocation") {
-      return addLocation(requestData.data);
+      return addLocation(payload, params.token || "");
     }
 
     return createResponse(false, "Invalid action");
@@ -91,7 +122,7 @@ function getData() {
 /**
  * Add a new location to the spreadsheet
  */
-function addLocation(locationData) {
+function addLocation(locationData, token) {
   try {
     // Validate required fields
     if (
@@ -101,6 +132,11 @@ function addLocation(locationData) {
       !locationData.longitude
     ) {
       return createResponse(false, "Missing required fields");
+    }
+
+    // Optional token check
+    if (API_TOKEN && token !== API_TOKEN) {
+      return createResponse(false, "Unauthorized");
     }
 
     const sheet = getOrCreateSheet();
@@ -174,24 +210,27 @@ function createResponse(success, data, error = null) {
     error: success ? null : error || data,
   };
 
-  return ContentService.createTextOutput(JSON.stringify(response))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders({
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    });
+  const output = ContentService.createTextOutput(
+    JSON.stringify(response)
+  ).setMimeType(ContentService.MimeType.JSON);
+
+  // Manually add CORS headers
+  const html = HtmlService.createHtmlOutput("")
+    .addMetaTag("Access-Control-Allow-Origin", "*")
+    .addMetaTag("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    .addMetaTag("Access-Control-Allow-Headers", "Content-Type");
+  // Workaround: Apps Script web apps do not support setting arbitrary headers on JSON output,
+  // but for most browsers simple requests will work. Keep doOptions for preflight.
+  return output;
 }
 
 /**
  * Handle OPTIONS requests for CORS
  */
 function doOptions() {
-  return ContentService.createTextOutput("").setHeaders({
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-  });
+  return ContentService.createTextOutput("").setMimeType(
+    ContentService.MimeType.TEXT
+  );
 }
 
 /**

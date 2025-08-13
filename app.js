@@ -79,20 +79,38 @@ class CaboVerdeMap {
         return;
       }
 
-      // Load from Google Apps Script endpoint
-      const response = await fetch(
-        `${CONFIG.GOOGLE_SCRIPT_URL}?action=getData`
-      );
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
-
-      const result = await response.json();
-      if (result.success) {
-        this.data = result.data || [];
-        this.updateMapLayers();
-      } else {
-        throw new Error(result.error || "Failed to load data");
-      }
+      // JSONP read from Apps Script endpoint to avoid CORS
+      await new Promise((resolve, reject) => {
+        const callbackName = `onSheetData_${Date.now()}`;
+        window[callbackName] = (result) => {
+          try {
+            if (result && result.success) {
+              this.data = result.data || [];
+              this.updateMapLayers();
+              resolve();
+            } else {
+              reject(
+                new Error(
+                  result && result.error ? result.error : "Invalid response"
+                )
+              );
+            }
+          } finally {
+            delete window[callbackName];
+            script &&
+              script.parentNode &&
+              script.parentNode.removeChild(script);
+          }
+        };
+        const script = document.createElement("script");
+        script.src = `${CONFIG.GOOGLE_SCRIPT_URL}?action=getData&callback=${callbackName}`;
+        script.onerror = () => {
+          delete window[callbackName];
+          script && script.parentNode && script.parentNode.removeChild(script);
+          reject(new Error("JSONP request failed"));
+        };
+        document.body.appendChild(script);
+      });
     } catch (error) {
       console.error("Error loading data:", error);
       this.data = [];
@@ -157,7 +175,7 @@ class CaboVerdeMap {
     ];
     const scatterplotLayer = new deck.ScatterplotLayer({
       id: "locations",
-      data: DATA,
+      data: this.data,
       pickable: true,
       opacity: 0.8,
       stroked: true,
@@ -187,13 +205,22 @@ class CaboVerdeMap {
     if (!object) return null;
 
     const categoryName = CATEGORY_NAMES[object.category] || object.category;
+    const esc = (s) =>
+      String(s).replace(
+        /[&<>"]/g,
+        (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])
+      );
 
     return {
       html: `
                 <div>
-                    <strong>${object.name}</strong><br/>
-                    <em>${categoryName}</em><br/>
-                    ${object.description ? `<p>${object.description}</p>` : ""}
+                    <strong>${esc(object.name)}</strong><br/>
+                    <em>${esc(categoryName)}</em><br/>
+                    ${
+                      object.description
+                        ? `<p>${esc(object.description)}</p>`
+                        : ""
+                    }
                     <small>Lat: ${parseFloat(object.latitude).toFixed(
                       4
                     )}, Lng: ${parseFloat(object.longitude).toFixed(4)}</small>
@@ -278,21 +305,20 @@ class CaboVerdeMap {
       submitBtn.textContent = "Guardando...";
       submitBtn.disabled = true;
 
-      // Send to Google Sheets
+      // Send to Google Sheets (use form-encoded to avoid CORS preflight)
       const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
         },
-        body: JSON.stringify({
-          action: "addLocation",
-          data: locationData,
-        }),
+        body: `action=addLocation&data=${encodeURIComponent(
+          JSON.stringify(locationData)
+        )}`,
       });
 
       const result = await response.json();
 
-      if (result.success) {
+      if (result && result.success) {
         // Add to local data
         this.data.push(locationData);
         this.updateMapLayers();
@@ -303,7 +329,9 @@ class CaboVerdeMap {
         // Show success message
         this.showMessage("Ubicación agregada exitosamente", "success");
       } else {
-        throw new Error(result.error || "Failed to save location");
+        // Fall back: refresh via JSONP to reflect server state (no CORS read)
+        await this.loadData();
+        if (result && result.error) throw new Error(result.error);
       }
     } catch (error) {
       console.error("Error saving location:", error);
