@@ -187,14 +187,10 @@ form {
   background-color: #0056b3;
 }
 
-.btn-secondary {
-}
-
 .sidebar-button {
   width: 50%;
   padding: 0;
-  height: 60px;
-  border: 1px solid white;
+  height: 50px;
   border-radius: 0;
   background: #1f1f21;
   font-family: monospace;
@@ -228,7 +224,7 @@ form {
 .sidebar-toggle {
   position: absolute;
   top: 0;
-  left: 320px;
+  left: 400px;
   z-index: 1200;
   transition: transform 0.3s ease, background 0.2s ease;
   background: #1f1f21;
@@ -288,7 +284,7 @@ body.theme-light .sidebar a:hover {
   height: 100vh;
   max-height: 100vh;
   overflow-y: hidden;
-  width: 320px;
+  width: 400px;
   background: #1f1f21;
   box-shadow: none;
   transform: translateX(0);
@@ -306,7 +302,7 @@ body.theme-light .sidebar a:hover {
 
 /* Move the toggle with the sidebar to avoid covering content */
 body.sidebar-closed .sidebar-toggle {
-  transform: translateX(-320px);
+  transform: translateX(-400px);
 }
 
 .sidebar-header {
@@ -331,7 +327,10 @@ body.sidebar-closed .sidebar-toggle {
   margin-top: auto;
   display: flex;
   flex-direction: row;
-  background: #1f1f21;
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
+  gap: 2px;
+  background: white;
 }
 .sidebar-section h4 {
   margin: 0 0 8px 0;
