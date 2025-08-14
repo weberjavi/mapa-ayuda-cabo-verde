@@ -330,8 +330,20 @@ body.sidebar-closed .sidebar-toggle {
 }
 
 .sidebar-section {
-  margin-top: 16px;
   padding: 16px;
+}
+
+.sidebar-instructions {
+  border: 1px dashed white;
+  margin: 0 16px;
+}
+
+.sidebar-instructions ul {
+  padding-left: 16px;
+}
+
+.sidebar-instructions li {
+  margin-bottom: 16px;
 }
 .sidebar-footer {
   margin-top: auto;
@@ -347,8 +359,12 @@ body.sidebar-closed .sidebar-toggle {
 .sidebar-legend {
   padding: 16px;
 }
-s .sidebar-section h4 {
-  margin: 0 0 8px 0;
+
+.sidebar-section .sidebar-instructions {
+  border: 1px dashed white;
+}
+.sidebar-section h4 {
+  margin: 8px 0;
   color: #ffffff;
 }
 
