@@ -6,11 +6,31 @@
 const SHEET_NAME = "Locations"; // Name of the sheet tab
 const API_TOKEN =
   PropertiesService.getScriptProperties().getProperty("API_TOKEN") || "";
+// Allowed categories (Portuguese) – used for sheet dropdown and server-side validation
+const ALLOWED_CATEGORIES = [
+  "Trabalhos de limpeza",
+  "Falta de energia",
+  "Falta de água",
+  "Falta de transporte",
+  "Falta de comunicações",
+  "Falta de serviços",
+  "Alojamento temporário",
+  "Necessidade de suprimentos e material",
+  "Equipa de resgate (evacuação)",
+  "Assistência médica",
+  "Apoio psicológico",
+  "Apoio logístico",
+  "Equipamento para mobilidade reduzida",
+  "Máquinas pesadas (gruas, pás, ...)",
+  "Contentores de entulho",
+  "Ajuda geral",
+];
 const HEADERS = [
   "name",
   "description",
   "category",
-  "prioridad",
+  "prioridade",
+  "estado",
   "personas",
   "ubicacion",
   "email",
@@ -151,8 +171,25 @@ function addLocation(locationData, token) {
     const rowData = [
       locationData.name,
       locationData.description || "",
-      locationData.category,
-      locationData.prioridad || "",
+      // Enforce category from allowlist
+      (function () {
+        const c = String(locationData.category || "").trim();
+        if (ALLOWED_CATEGORIES.indexOf(c) === -1) {
+          throw new Error("Invalid category");
+        }
+        return c;
+      })(),
+      // Default prioridade and estado if not provided
+      (function () {
+        const p = String(
+          locationData.prioridade || locationData.prioridad || "normal"
+        ).toLowerCase();
+        return p === "alta" || p === "normal" ? p : "normal";
+      })(),
+      (function () {
+        const s = String(locationData.estado || "ativo").toLowerCase();
+        return s === "ativo" || s === "resolto" ? s : "ativo";
+      })(),
       locationData.personas || "",
       locationData.ubicacion || "",
       locationData.email || "",
@@ -191,21 +228,57 @@ function getOrCreateSheet() {
     headerRange.setFontWeight("bold");
     headerRange.setBackground("#f0f0f0");
   } else {
-    // Check if headers exist
+    // Ensure headers exist (do not clobber extra columns if present)
     const firstRow = sheet.getRange(1, 1, 1, HEADERS.length).getValues()[0];
     const hasHeaders = HEADERS.every(
       (header, index) => firstRow[index] === header
     );
-
     if (!hasHeaders) {
-      // Add or update headers
       sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
-
-      // Format headers
       const headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
       headerRange.setFontWeight("bold");
       headerRange.setBackground("#f0f0f0");
     }
+  }
+
+  // Apply data validation to category column
+  try {
+    const headerRow = sheet
+      .getRange(1, 1, 1, sheet.getLastColumn())
+      .getValues()[0];
+    const catIndex = headerRow.indexOf("category");
+    if (catIndex >= 0) {
+      const rule = SpreadsheetApp.newDataValidation()
+        .requireValueInList(ALLOWED_CATEGORIES, true)
+        .setAllowInvalid(false)
+        .build();
+      const numRows = Math.max(1, sheet.getMaxRows() - 1);
+      sheet.getRange(2, catIndex + 1, numRows, 1).setDataValidation(rule);
+    }
+
+    // Apply data validation to prioridade and estado columns
+    const prioridadeIndex = headerRow.indexOf("prioridade");
+    if (prioridadeIndex >= 0) {
+      const ruleP = SpreadsheetApp.newDataValidation()
+        .requireValueInList(["alta", "normal"], true)
+        .setAllowInvalid(false)
+        .build();
+      const numRows = Math.max(1, sheet.getMaxRows() - 1);
+      sheet
+        .getRange(2, prioridadeIndex + 1, numRows, 1)
+        .setDataValidation(ruleP);
+    }
+    const estadoIndex = headerRow.indexOf("estado");
+    if (estadoIndex >= 0) {
+      const ruleE = SpreadsheetApp.newDataValidation()
+        .requireValueInList(["ativo", "resolto"], true)
+        .setAllowInvalid(false)
+        .build();
+      const numRows = Math.max(1, sheet.getMaxRows() - 1);
+      sheet.getRange(2, estadoIndex + 1, numRows, 1).setDataValidation(ruleE);
+    }
+  } catch (e) {
+    // best-effort; ignore if validation fails
   }
 
   return sheet;
