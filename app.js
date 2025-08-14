@@ -223,6 +223,15 @@ class CaboVerdeMap {
   updateMapLayers() {
     if (!this.overlay && !this.deck) return;
 
+    // Compute max people to normalize radius between 4..8 px
+    const maxPeople = Math.max(
+      1,
+      ...this.data.map((d) => {
+        const n = Number(d.personas || d.persons || d.people || 0);
+        return Number.isFinite(n) ? n : 0;
+      })
+    );
+
     const scatterplotLayer = new deck.ScatterplotLayer({
       id: "locations",
       data: this.data,
@@ -230,17 +239,17 @@ class CaboVerdeMap {
       opacity: 0.8,
       stroked: true,
       filled: true,
+      radiusUnits: "pixels",
       radiusScale: 1,
       radiusMinPixels: 4,
       radiusMaxPixels: 8,
       getPosition: (d) => [parseFloat(d.longitude), parseFloat(d.latitude)],
       getRadius: (d) => {
-        // Radius based on number of affected people: 2px .. 8px
-        // Use a logarithmic scale for robustness across wide ranges
+        // Pixel radius based on affected people: 4px .. 8px
         const personas = Number(d.personas || d.persons || d.people || 0);
-        if (!isFinite(personas) || personas <= 0) return 4;
-        const r = 2 + Math.min(8, Math.log10(personas + 1) * 8);
-        return r;
+        if (!Number.isFinite(personas) || personas <= 0) return 4;
+        const t = Math.sqrt(Math.min(personas, maxPeople) / maxPeople); // 0..1
+        return 4 + t * 4; // 4..8 px
       },
       getFillColor: (d) => this.getCategoryColor(d.category),
     });

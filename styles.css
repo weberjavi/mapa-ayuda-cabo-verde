@@ -333,6 +333,10 @@ body.sidebar-closed .sidebar-toggle {
   padding: 16px;
 }
 
+.sidebar-section p {
+  margin-bottom: 16px;
+}
+
 .sidebar-instructions {
   border: 1px dashed white;
   margin: 0 16px;
