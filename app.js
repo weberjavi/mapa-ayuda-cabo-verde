@@ -389,12 +389,57 @@ class CaboVerdeMap {
   }
 
   setupEventHandlers() {
-    // Double-click handler for adding new locations
-    this.map.on("dblclick", (e) => {
-      e.preventDefault();
-      const { lng, lat } = e.lngLat;
-      this.showAddLocationForm(lng, lat);
-    });
+    // Click/double-tap to add locations
+    const isTouchDevice =
+      "ontouchstart" in window || (navigator && navigator.maxTouchPoints > 0);
+    if (!isTouchDevice) {
+      // Desktop: use dblclick
+      this.map.on("dblclick", (e) => {
+        e.preventDefault();
+        const { lng, lat } = e.lngLat;
+        this.showAddLocationForm(lng, lat);
+      });
+    } else {
+      // Mobile: detect double tap and prevent default zoom
+      try {
+        this.map.doubleClickZoom &&
+          this.map.doubleClickZoom.disable &&
+          this.map.doubleClickZoom.disable();
+      } catch (_) {}
+      const container = this.map.getCanvasContainer();
+      let lastTapTime = 0;
+      let lastX = 0;
+      let lastY = 0;
+      container.addEventListener(
+        "touchend",
+        (ev) => {
+          if (ev.touches && ev.touches.length) return;
+          const now = Date.now();
+          const touch = ev.changedTouches && ev.changedTouches[0];
+          if (!touch) return;
+          const rect = container.getBoundingClientRect();
+          const x = touch.clientX - rect.left;
+          const y = touch.clientY - rect.top;
+          const dt = now - lastTapTime;
+          const dx = x - lastX;
+          const dy = y - lastY;
+          const dist2 = dx * dx + dy * dy;
+          const isDouble = dt < 350 && dist2 < 625; // <~25px movement
+          if (isDouble) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            const lngLat = this.map.unproject([x, y]);
+            this.showAddLocationForm(lngLat.lng, lngLat.lat);
+            lastTapTime = 0; // reset
+          } else {
+            lastTapTime = now;
+            lastX = x;
+            lastY = y;
+          }
+        },
+        { passive: false }
+      );
+    }
 
     // Sidebar toggle
     const sidebar = document.getElementById("sidebar");
