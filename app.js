@@ -25,6 +25,18 @@ class CaboVerdeMap {
   }
 
   initializeMap() {
+    // Define bounds
+    // Initial viewport bounds (used only on first load)
+    const INITIAL_BOUNDS = [
+      [-25.186355591850088, 16.77147184854499], // SW
+      [-24.85236779679923, 17.060273719317834], // NE
+    ];
+    // Max panning bounds (restrict map movement)
+    const MAX_BOUNDS = [
+      [-25.649277391775684, 14.464734909097018], // SW
+      [-22.30069985150439, 17.37026778939078], // NE
+    ];
+
     // Initialize MapLibre GL map
     this.map = new maplibregl.Map({
       container: "map",
@@ -36,6 +48,7 @@ class CaboVerdeMap {
       zoom: CONFIG.INITIAL_VIEW_STATE.zoom,
       pitch: CONFIG.INITIAL_VIEW_STATE.pitch,
       bearing: CONFIG.INITIAL_VIEW_STATE.bearing,
+      maxBounds: MAX_BOUNDS,
     });
 
     // Wait for map to load before initializing overlay
@@ -48,11 +61,8 @@ class CaboVerdeMap {
 
       this.map.addControl(this.overlay);
 
-      // Fit map to provided bounding box
-      const bounds = [
-        [-25.186355591850088, 16.77147184854499], // SW [lng, lat]
-        [-24.85236779679923, 17.060273719317834], // NE [lng, lat]
-      ];
+      // Fit map to initial bounding box (viewport on first load only)
+      const bounds = INITIAL_BOUNDS;
       try {
         this.map.fitBounds(bounds, { padding: 40, duration: 0 });
       } catch (_) {}
