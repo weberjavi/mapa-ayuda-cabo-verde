@@ -48,6 +48,15 @@ class CaboVerdeMap {
 
       this.map.addControl(this.overlay);
 
+      // Fit map to provided bounding box
+      const bounds = [
+        [-25.186355591850088, 16.77147184854499], // SW [lng, lat]
+        [-24.85236779679923, 17.060273719317834], // NE [lng, lat]
+      ];
+      try {
+        this.map.fitBounds(bounds, { padding: 40, duration: 0 });
+      } catch (_) {}
+
       // Basemap toggle handler
       const toggleBtn = document.getElementById("toggle-basemap");
       let isSatellite = false;
