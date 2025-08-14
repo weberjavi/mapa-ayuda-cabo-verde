@@ -244,6 +244,13 @@ class CaboVerdeMap {
       name: formData.get("name"),
       description: formData.get("description") || "",
       category: formData.get("category"),
+      prioridad: formData.get("prioridad") || "",
+      personas: formData.get("personas")
+        ? Number(formData.get("personas"))
+        : null,
+      ubicacion: formData.get("ubicacion") || "",
+      email: formData.get("email") || "",
+      telefono: formData.get("telefono") || "",
       latitude: parseFloat(formData.get("latitude")),
       longitude: parseFloat(formData.get("longitude")),
       timestamp: new Date().toISOString(),
