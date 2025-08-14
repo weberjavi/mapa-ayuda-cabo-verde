@@ -27,11 +27,6 @@
         ☰
       </button>
 
-      <!-- Basemap toggle -->
-      <div class="basemap-toggle">
-        <button id="toggle-basemap" class="btn btn-secondary">Satélite</button>
-      </div>
-
       <!-- Loading indicator -->
       <div id="loading" class="loading">
         <div class="spinner"></div>
@@ -121,49 +116,63 @@
       <!-- Sidebar -->
       <aside id="sidebar" class="sidebar open" aria-hidden="false">
         <div class="sidebar-header">
-          <h3>Información</h3>
+          <h3>Cabo Verde Comunidade</h3>
         </div>
         <div class="sidebar-content">
-          <section class="sidebar-section">
-            <h4>Instrucciones</h4>
-            <ul>
-              <li>Haz doble clic en el mapa para proponer una ubicación.</li>
-              <li>Completa los campos del formulario y envía.</li>
-              <li>Usa el botón "Satélite" para cambiar el mapa base.</li>
-            </ul>
-          </section>
-          <section class="sidebar-section">
-            <h4>Créditos</h4>
-            <p>Mapa por la comunidad. Base: MapLibre GL + DeckGL.</p>
-          </section>
-          <section class="sidebar-section">
-            <h4>Enlaces útiles</h4>
-            <ul>
-              <li>
-                <a href="https://maplibre.org/" target="_blank" rel="noopener"
-                  >MapLibre</a
-                >
-              </li>
-              <li>
-                <a href="https://deck.gl/" target="_blank" rel="noopener"
-                  >DeckGL</a
-                >
-              </li>
-              <li>
-                <a
-                  href="https://www.netlify.com/"
-                  target="_blank"
-                  rel="noopener"
-                  >Netlify</a
-                >
-              </li>
-            </ul>
+          <div id="sidebar-info">
+            <section class="sidebar-section">
+              <h4>Instrucciones</h4>
+              <ul>
+                <li>Haz doble clic en el mapa para proponer una ubicación.</li>
+                <li>Completa los campos del formulario y envía.</li>
+                <li>Usa el botón "Satélite" para cambiar el mapa base.</li>
+              </ul>
+            </section>
+            <section class="sidebar-section">
+              <h4>Créditos</h4>
+              <p>Mapa por la comunidad. Base: MapLibre GL + DeckGL.</p>
+            </section>
+            <section class="sidebar-section">
+              <h4>Enlaces útiles</h4>
+              <ul>
+                <li>
+                  <a href="https://maplibre.org/" target="_blank" rel="noopener"
+                    >MapLibre</a
+                  >
+                </li>
+                <li>
+                  <a href="https://deck.gl/" target="_blank" rel="noopener"
+                    >DeckGL</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://www.netlify.com/"
+                    target="_blank"
+                    rel="noopener"
+                    >Netlify</a
+                  >
+                </li>
+              </ul>
+            </section>
+          </div>
+          <div id="sidebar-legend" style="display: none"></div>
+          <section class="sidebar-section sidebar-footer">
+            <button
+              id="toggle-basemap-2"
+              class="btn sidebar-button"
+              aria-label="Cambiar mapa base"
+            >
+              Satélite
+            </button>
+            <button id="sidebar-content-toggle" class="btn sidebar-button">
+              Leyenda
+            </button>
           </section>
         </div>
       </aside>
     </div>
 
-    <!-- Scripts -->
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
     <script src="sample-data.js"></script>

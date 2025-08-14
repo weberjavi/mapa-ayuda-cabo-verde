@@ -78,19 +78,95 @@ class CaboVerdeMap {
 
       // Basemap toggle handler
       const toggleBtn = document.getElementById("toggle-basemap");
+      const toggleBtn2 = document.getElementById("toggle-basemap-2");
+      const themeBtn = document.getElementById("theme-toggle");
+      const sidebarContentToggle = document.getElementById(
+        "sidebar-content-toggle"
+      );
       let isSatellite = false;
-      if (toggleBtn) {
-        toggleBtn.addEventListener("click", () => {
-          isSatellite = !isSatellite;
-          const nextStyle = isSatellite
-            ? CONFIG.RASTER_SATELLITE_STYLE
-            : CONFIG.MAP_STYLE;
-          this.map.setStyle(nextStyle);
-          // After style loads, re-apply overlay layers
-          this.map.once("styledata", () => {
-            this.updateMapLayers();
+      const handleBaseToggle = () => {
+        isSatellite = !isSatellite;
+        const nextStyle = isSatellite
+          ? CONFIG.RASTER_SATELLITE_STYLE
+          : CONFIG.MAP_STYLE;
+        this.map.setStyle(nextStyle);
+        // After style loads, re-apply overlay layers
+        this.map.once("styledata", () => {
+          this.updateMapLayers();
+        });
+        const label = isSatellite ? "Vector" : "Satélite";
+        if (toggleBtn) toggleBtn.textContent = label;
+        if (toggleBtn2) toggleBtn2.textContent = label;
+      };
+      if (toggleBtn) toggleBtn.addEventListener("click", handleBaseToggle);
+      if (toggleBtn2) toggleBtn2.addEventListener("click", handleBaseToggle);
+
+      // Theme toggle
+      if (themeBtn) {
+        // Default to dark theme
+        document.body.classList.add("theme-dark");
+        themeBtn.textContent = "Claro";
+        themeBtn.addEventListener("click", () => {
+          const isDark = document.body.classList.contains("theme-dark");
+          if (isDark) {
+            document.body.classList.remove("theme-dark");
+            document.body.classList.add("theme-light");
+            themeBtn.textContent = "Oscuro";
+          } else {
+            document.body.classList.remove("theme-light");
+            document.body.classList.add("theme-dark");
+            themeBtn.textContent = "Claro";
+          }
+        });
+      }
+
+      // Sidebar content toggle: info <-> legend
+      if (sidebarContentToggle) {
+        const infoEl = document.getElementById("sidebar-info");
+        const legendEl = document.getElementById("sidebar-legend");
+        // Build legend once
+        if (legendEl && !legendEl.innerHTML) {
+          const categories = Object.keys(CATEGORY_NAMES || {});
+          const list = document.createElement("ul");
+          list.style.listStyle = "none";
+          list.style.margin = "0";
+          list.style.padding = "0";
+          categories.forEach((key) => {
+            const li = document.createElement("li");
+            li.style.display = "flex";
+            li.style.alignItems = "center";
+            li.style.gap = "8px";
+            li.style.margin = "6px 0";
+            const swatch = document.createElement("span");
+            swatch.style.display = "inline-block";
+            swatch.style.width = "14px";
+            swatch.style.height = "14px";
+            swatch.style.borderRadius = "50%";
+            const col = (CONFIG.CATEGORY_COLORS &&
+              CONFIG.CATEGORY_COLORS[key]) ||
+              CONFIG.DEFAULT_COLOR || [120, 120, 120, 180];
+            swatch.style.backgroundColor = `rgba(${col[0]},${col[1]},${
+              col[2]
+            },${(col[3] || 180) / 255})`;
+            const label = document.createElement("span");
+            label.textContent = CATEGORY_NAMES[key] || key;
+            li.appendChild(swatch);
+            li.appendChild(label);
+            list.appendChild(li);
           });
-          toggleBtn.textContent = isSatellite ? "Vector" : "Satélite";
+          legendEl.appendChild(list);
+        }
+        sidebarContentToggle.addEventListener("click", () => {
+          const showingInfo = infoEl && infoEl.style.display !== "none";
+          if (showingInfo) {
+            if (infoEl) infoEl.style.display = "none";
+            if (legendEl) legendEl.style.display = "";
+            sidebarContentToggle.textContent = "Información";
+          } else {
+            if (legendEl) legendEl.style.display = "none";
+            if (infoEl) infoEl.style.display = "";
+            sidebarContentToggle.textContent = "Leyenda";
+          }
         });
       }
 
