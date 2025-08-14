@@ -169,11 +169,11 @@ class CaboVerdeMap {
           if (showingInfo) {
             if (infoEl) infoEl.style.display = "none";
             if (legendEl) legendEl.style.display = "";
-            sidebarContentToggle.textContent = "Información";
+            sidebarContentToggle.textContent = "Instruções";
           } else {
             if (legendEl) legendEl.style.display = "none";
             if (infoEl) infoEl.style.display = "";
-            sidebarContentToggle.textContent = "Leyenda";
+            sidebarContentToggle.textContent = "Legenda";
           }
         });
       }
