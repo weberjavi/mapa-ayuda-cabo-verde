@@ -251,9 +251,8 @@ class CaboVerdeMap {
       const result = await response.json();
 
       if (result && result.success) {
-        // Add to local data
-        this.data.push(locationData);
-        this.updateMapLayers();
+        // Refetch from backend to render authoritative data
+        await this.loadData();
 
         // Hide modal
         this.hideModal();
