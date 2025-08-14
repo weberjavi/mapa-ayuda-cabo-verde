@@ -20,6 +20,7 @@ const HEADERS = [
  */
 function doGet(e) {
   try {
+    e = e || { parameter: {} };
     const action = e.parameter && e.parameter.action;
 
     if (action === "getData") {
@@ -52,15 +53,15 @@ function doGet(e) {
  */
 function doPost(e) {
   try {
-    let action = "";
+    e = e || { parameter: {}, postData: null };
+    const params = e.parameter || {};
+    let action = params.action || "";
     let payload = {};
     if (e.postData && e.postData.type === "application/json") {
-      const requestData = JSON.parse(e.postData.contents);
-      action = requestData.action;
+      const requestData = JSON.parse(e.postData.contents || "{}");
+      action = requestData.action || action;
       payload = requestData.data || {};
     } else {
-      const params = e.parameter || {};
-      action = params.action;
       if (params.data) {
         try {
           payload = JSON.parse(params.data);
