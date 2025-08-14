@@ -78,6 +78,18 @@ class CaboVerdeMap {
         document.body.classList.add("sidebar-open");
       }
 
+      // On mobile, default the sidebar to closed
+      try {
+        const isMobile =
+          typeof window !== "undefined" &&
+          window.matchMedia &&
+          window.matchMedia("(max-width: 768px)").matches;
+        if (isMobile && sidebarEl && !sidebarEl.classList.contains("closed")) {
+          sidebarEl.classList.add("closed");
+          document.body.classList.add("sidebar-closed");
+        }
+      } catch (_) {}
+
       // Basemap toggle handler
       const toggleBtn = document.getElementById("toggle-basemap");
       const toggleBtn2 = document.getElementById("toggle-basemap-2");

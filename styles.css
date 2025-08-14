@@ -496,6 +496,10 @@ body.theme-light .modal-content .form-group select {
   }
   .sidebar {
     width: 100vw !important;
+    transform: translateX(-100%); /* default hidden on mobile */
+  }
+  .sidebar:not(.closed) {
+    transform: translateX(0); /* open state when not closed */
   }
   /* Place the toggle on top of the sidebar when open (and keep visible when closed) */
   .sidebar-toggle {
@@ -521,7 +525,7 @@ body.theme-light .modal-content .form-group select {
   }
 
   .form-actions {
-    flex-direction: column;
+    flex-direction: column-reverse; /* confirm button on top */
   }
 
   .btn {
