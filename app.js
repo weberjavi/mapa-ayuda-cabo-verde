@@ -231,20 +231,18 @@ class CaboVerdeMap {
       stroked: true,
       filled: true,
       radiusScale: 1,
-      radiusMinPixels: 2,
+      radiusMinPixels: 4,
       radiusMaxPixels: 8,
-      lineWidthMinPixels: 2,
       getPosition: (d) => [parseFloat(d.longitude), parseFloat(d.latitude)],
       getRadius: (d) => {
         // Radius based on number of affected people: 2px .. 8px
         // Use a logarithmic scale for robustness across wide ranges
         const personas = Number(d.personas || d.persons || d.people || 0);
         if (!isFinite(personas) || personas <= 0) return 4;
-        const r = 2 + Math.min(6, Math.log10(personas + 1) * 6);
+        const r = 2 + Math.min(8, Math.log10(personas + 1) * 8);
         return r;
       },
       getFillColor: (d) => this.getCategoryColor(d.category),
-      getLineColor: [255, 255, 255, 255],
     });
 
     // Blinking overlay for oldest three points
