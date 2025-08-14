@@ -255,11 +255,11 @@ class CaboVerdeMap {
         stroked: false,
         filled: true,
         radiusScale: 1,
-        radiusMinPixels: 10,
-        radiusMaxPixels: 24,
+        radiusMinPixels: 4,
+        radiusMaxPixels: 20,
         getPosition: (d) => [parseFloat(d.longitude), parseFloat(d.latitude)],
         getRadius: (d) => {
-          const base = 12;
+          const base = 4;
           const pulse = 6 * (0.5 + 0.5 * Math.sin(this.animationTick));
           return base + pulse;
         },
