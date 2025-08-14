@@ -216,6 +216,7 @@ form {
   top: 20px;
   left: 20px;
   z-index: 1200;
+  transition: transform 0.3s ease;
 }
 
 .sidebar {
@@ -238,7 +239,8 @@ form {
 }
 
 /* Move the toggle with the sidebar to avoid covering content */
-.sidebar.open ~ .sidebar-toggle {
+/* Move the toggle when sidebar is open */
+body.sidebar-open .sidebar-toggle {
   transform: translateX(320px);
 }
 

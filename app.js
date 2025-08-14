@@ -70,6 +70,12 @@ class CaboVerdeMap {
         this.map.fitBounds(bounds, { padding: 40, duration: 0 });
       } catch (_) {}
 
+      // Ensure sidebar initial state reflected on body for toggle position
+      const sidebarEl = document.getElementById("sidebar");
+      if (sidebarEl && sidebarEl.classList.contains("open")) {
+        document.body.classList.add("sidebar-open");
+      }
+
       // Basemap toggle handler
       const toggleBtn = document.getElementById("toggle-basemap");
       let isSatellite = false;
@@ -283,9 +289,11 @@ class CaboVerdeMap {
         if (isOpen) {
           sidebar.classList.remove("open");
           sidebar.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("sidebar-open");
         } else {
           sidebar.classList.add("open");
           sidebar.setAttribute("aria-hidden", "false");
+          document.body.classList.add("sidebar-open");
         }
       });
     }
