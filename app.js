@@ -255,12 +255,12 @@ class CaboVerdeMap {
         stroked: false,
         filled: true,
         radiusScale: 1,
-        radiusMinPixels: 12,
-        radiusMaxPixels: 20,
+        radiusMinPixels: 6,
+        radiusMaxPixels: 24,
         getPosition: (d) => [parseFloat(d.longitude), parseFloat(d.latitude)],
         getRadius: (d) => {
-          const base = 8;
-          const pulse = 6 * (0.5 + 0.5 * Math.sin(this.animationTick));
+          const base = 10;
+          const pulse = 10 * (0.5 + 0.5 * Math.sin(this.animationTick));
           return base + pulse;
         },
         getFillColor: (d) => {
@@ -291,7 +291,7 @@ class CaboVerdeMap {
     }
     // Blink all high-priority locations
     this.blinkData = this.data.filter((d) => {
-      const p = String(d.prioridade || d.prioridad || "")
+      const p = String(d.prioridade || "")
         .toLowerCase()
         .trim();
       return p === "alta";
