@@ -27,22 +27,22 @@ const CONFIG = {
 
   // Category colors for map markers
   CATEGORY_COLORS: {
-    "Labores de Limpieza": [59, 130, 246, 200], // Vivid blue
-    "Faltan energía": [245, 158, 11, 200], // Amber
-    "Faltan agua": [16, 185, 129, 200], // Emerald
-    "Faltan transporte": [99, 102, 241, 200], // Indigo
-    "Faltan comunicaciones": [236, 72, 153, 200], // Pink
-    "Faltan servicios": [234, 179, 8, 200], // Gold
-    "Alojamiento temporal": [168, 85, 247, 200], // Purple
-    "Necesidad de suministros y material": [2, 132, 199, 200], // Sky blue
-    "Equipo de rescate (evacuación)": [239, 68, 68, 200], // Red
-    "Asistencia médica": [244, 63, 94, 200], // Rose
-    "Apoyo psicológico": [20, 184, 166, 200], // Teal
-    "Apoyo logístico": [34, 197, 94, 200], // Green
-    "Maquinaria para movilidad reducida": [234, 88, 12, 200], // Orange
-    "Maquinaria pesada (grúas, palas, ...)": [217, 119, 6, 200], // Deep orange
-    "Contenedores de Escombros": [71, 85, 105, 200], // Slate
-    "Ayuda general": [15, 118, 110, 200], // Dark teal
+    "Trabalhos de limpeza": [59, 130, 246, 200],
+    "Falta de energia": [245, 158, 11, 200],
+    "Falta de água": [16, 185, 129, 200],
+    "Falta de transporte": [99, 102, 241, 200],
+    "Falta de comunicações": [236, 72, 153, 200],
+    "Falta de serviços": [234, 179, 8, 200],
+    "Alojamento temporário": [168, 85, 247, 200],
+    "Necessidade de suprimentos e material": [2, 132, 199, 200],
+    "Equipa de resgate (evacuação)": [239, 68, 68, 200],
+    "Assistência médica": [244, 63, 94, 200],
+    "Apoio psicológico": [20, 184, 166, 200],
+    "Apoio logístico": [34, 197, 94, 200],
+    "Equipamento para mobilidade reduzida": [234, 88, 12, 200],
+    "Máquinas pesadas (gruas, pás, ...)": [217, 119, 6, 200],
+    "Contentores de entulho": [71, 85, 105, 200],
+    "Ajuda geral": [15, 118, 110, 200],
   },
 
   // Default marker color for unknown categories
