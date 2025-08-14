@@ -147,18 +147,56 @@ function addLocation(locationData, token) {
 
     const sheet = getOrCreateSheet();
 
+    // Basic server-side validation & sanitization
+    const name = String(locationData.name || "")
+      .trim()
+      .slice(0, 200);
+    const description = String(locationData.description || "")
+      .trim()
+      .slice(0, 2000);
+    const category = String(locationData.category || "")
+      .trim()
+      .slice(0, 200);
+    const prioridad = String(locationData.prioridad || "")
+      .trim()
+      .slice(0, 100);
+    const personas = String(locationData.personas || "")
+      .trim()
+      .slice(0, 20);
+    const ubicacion = String(locationData.ubicacion || "")
+      .trim()
+      .slice(0, 200);
+    const email = String(locationData.email || "")
+      .trim()
+      .slice(0, 200);
+    const telefono = String(locationData.telefono || "")
+      .trim()
+      .slice(0, 50);
+    const lat = Number(locationData.latitude);
+    const lon = Number(locationData.longitude);
+    if (
+      isNaN(lat) ||
+      isNaN(lon) ||
+      lat < -90 ||
+      lat > 90 ||
+      lon < -180 ||
+      lon > 180
+    ) {
+      return createResponse(false, "Invalid coordinates");
+    }
+
     // Prepare row data
     const rowData = [
-      locationData.name,
-      locationData.description || "",
-      locationData.category,
-      locationData.prioridad || "",
-      locationData.personas || "",
-      locationData.ubicacion || "",
-      locationData.email || "",
-      locationData.telefono || "",
-      locationData.latitude,
-      locationData.longitude,
+      name,
+      description,
+      category,
+      prioridad,
+      personas,
+      ubicacion,
+      email,
+      telefono,
+      lat,
+      lon,
       locationData.timestamp || new Date().toISOString(),
     ];
 
