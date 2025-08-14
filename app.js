@@ -192,6 +192,7 @@ class CaboVerdeMap {
             autoRefreshBtn.dataset.active = "false";
             autoRefreshBtn.style.opacity = "0.6";
             autoRefreshBtn.style.color = "";
+            autoRefreshBtn.classList.remove("active");
             if (autoRefreshTimer) {
               clearInterval(autoRefreshTimer);
               autoRefreshTimer = null;
@@ -201,6 +202,7 @@ class CaboVerdeMap {
             autoRefreshBtn.dataset.active = "true";
             autoRefreshBtn.style.opacity = "1";
             autoRefreshBtn.style.color = "#22c55e"; // green when active
+            autoRefreshBtn.classList.add("active");
             if (autoRefreshTimer) {
               clearInterval(autoRefreshTimer);
             }
@@ -222,6 +224,10 @@ class CaboVerdeMap {
   async loadData() {
     try {
       this.isFetching = true;
+      const autoRefreshBtn = document.getElementById("auto-refresh-toggle");
+      if (autoRefreshBtn && autoRefreshBtn.dataset.active === "true") {
+        autoRefreshBtn.style.opacity = "0.6";
+      }
       if (CONFIG.USE_SAMPLE_DATA) {
         this.data = Array.isArray(window.SAMPLE_DATA) ? window.SAMPLE_DATA : [];
         this.computeBlinkData();
@@ -253,6 +259,10 @@ class CaboVerdeMap {
       this.stopAnimation();
     } finally {
       this.isFetching = false;
+      const autoRefreshBtn = document.getElementById("auto-refresh-toggle");
+      if (autoRefreshBtn && autoRefreshBtn.dataset.active === "true") {
+        autoRefreshBtn.style.opacity = "1";
+      }
       // Hide loading indicator only on first load
       if (!this.hasLoadedOnce) {
         this.hideLoading();

@@ -369,6 +369,11 @@ body.sidebar-closed .sidebar-toggle {
   background: #1f1f21;
   color: #e6e6e6;
   font-family: monospace;
+  border: 1px solid #444;
+}
+
+.sidebar-switch.active {
+  border-color: #22c55e; /* green border when active */
 }
 
 .sidebar-legend {
