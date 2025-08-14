@@ -237,6 +237,11 @@ form {
   transform: translateX(0);
 }
 
+/* Move the toggle with the sidebar to avoid covering content */
+.sidebar.open ~ .sidebar-toggle {
+  transform: translateX(320px);
+}
+
 .sidebar-header {
   display: flex;
   align-items: center;
