@@ -7,6 +7,9 @@ class CaboVerdeMap {
     this.map = null;
     this.data = [];
     this.isLoading = true;
+    this.blinkData = [];
+    this.animationTick = 0;
+    this._animRaf = null;
 
     this.init();
   }
@@ -94,7 +97,9 @@ class CaboVerdeMap {
     try {
       if (CONFIG.USE_SAMPLE_DATA) {
         this.data = Array.isArray(window.SAMPLE_DATA) ? window.SAMPLE_DATA : [];
+        this.computeBlinkData();
         this.updateMapLayers();
+        this.startAnimation();
         return;
       }
 
@@ -105,7 +110,9 @@ class CaboVerdeMap {
       const result = await response.json();
       if (result && result.success) {
         this.data = result.data || [];
+        this.computeBlinkData();
         this.updateMapLayers();
+        this.startAnimation();
       } else {
         throw new Error(
           (result && result.error) || "Failed to load data from proxy"
@@ -114,7 +121,9 @@ class CaboVerdeMap {
     } catch (error) {
       console.error("Error loading data:", error);
       this.data = [];
+      this.blinkData = [];
       this.updateMapLayers();
+      this.stopAnimation();
     } finally {
       // Hide loading indicator after data is loaded (or failed to load)
       this.hideLoading();
@@ -141,10 +150,87 @@ class CaboVerdeMap {
       getLineColor: [255, 255, 255, 255],
     });
 
+    // Blinking overlay for oldest three points
+    const layers = [scatterplotLayer];
+    if (this.blinkData && this.blinkData.length > 0) {
+      const blinkLayer = new deck.ScatterplotLayer({
+        id: "locations-blink",
+        data: this.blinkData,
+        pickable: false,
+        stroked: false,
+        filled: true,
+        radiusScale: 1,
+        radiusMinPixels: 10,
+        radiusMaxPixels: 24,
+        getPosition: (d) => [parseFloat(d.longitude), parseFloat(d.latitude)],
+        getRadius: (d) => {
+          const base = 12;
+          const pulse = 6 * (0.5 + 0.5 * Math.sin(this.animationTick));
+          return base + pulse;
+        },
+        getFillColor: (d) => {
+          const col = this.getCategoryColor(d.category) || [108, 117, 125, 180];
+          const phase = 0.5 + 0.5 * Math.sin(this.animationTick);
+          const a = Math.round(80 + phase * 150);
+          return [col[0], col[1], col[2], a];
+        },
+        updateTriggers: {
+          getFillColor: [this.animationTick],
+          getRadius: [this.animationTick],
+        },
+      });
+      layers.push(blinkLayer);
+    }
+
     if (this.overlay) {
-      this.overlay.setProps({ layers: [scatterplotLayer] });
+      this.overlay.setProps({ layers });
     } else if (this.deck) {
-      this.deck.setProps({ layers: [scatterplotLayer] });
+      this.deck.setProps({ layers });
+    }
+  }
+
+  computeBlinkData() {
+    if (!Array.isArray(this.data) || this.data.length === 0) {
+      this.blinkData = [];
+      return;
+    }
+    // Prefer entries with valid timestamps, oldest first
+    const withTime = [];
+    const withoutTime = [];
+    for (let i = 0; i < this.data.length; i++) {
+      const d = this.data[i];
+      const t = Date.parse(d.timestamp);
+      if (!isNaN(t)) withTime.push({ d, t });
+      else withoutTime.push({ d, idx: i });
+    }
+    let selected = [];
+    if (withTime.length >= 3) {
+      withTime.sort((a, b) => a.t - b.t);
+      selected = withTime.slice(0, 3).map((x) => x.d);
+    } else {
+      // Fill from withTime then from earliest rows
+      selected = withTime.sort((a, b) => a.t - b.t).map((x) => x.d);
+      for (let i = 0; i < withoutTime.length && selected.length < 3; i++) {
+        selected.push(withoutTime[i].d);
+      }
+    }
+    this.blinkData = selected;
+  }
+
+  startAnimation() {
+    this.stopAnimation();
+    const animate = () => {
+      this.animationTick = performance.now() / 350; // speed factor
+      this.updateMapLayers();
+      this._animRaf = requestAnimationFrame(animate);
+    };
+    this._animRaf = requestAnimationFrame(animate);
+  }
+
+  stopAnimation() {
+    if (this._animRaf) {
+      cancelAnimationFrame(this._animRaf);
+      this._animRaf = null;
     }
   }
 
