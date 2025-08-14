@@ -1,3 +1,7 @@
+/* Sidebar sizing variable */
+:root {
+  --sidebar-width: 400px;
+}
 /* Reset and base styles */
 * {
   margin: 0;
@@ -224,12 +228,17 @@ form {
 .sidebar-toggle {
   position: absolute;
   top: 0;
-  left: 400px;
+  left: var(--sidebar-width);
   z-index: 1200;
   transition: transform 0.3s ease, background 0.2s ease;
   background: #1f1f21;
   color: #e6e6e6;
   height: 53px;
+  width: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
@@ -284,7 +293,7 @@ body.theme-light .sidebar a:hover {
   height: 100vh;
   max-height: 100vh;
   overflow-y: hidden;
-  width: 400px;
+  width: var(--sidebar-width);
   background: #1f1f21;
   box-shadow: none;
   transform: translateX(0);
@@ -302,7 +311,7 @@ body.theme-light .sidebar a:hover {
 
 /* Move the toggle with the sidebar to avoid covering content */
 body.sidebar-closed .sidebar-toggle {
-  transform: translateX(-400px);
+  transform: translateX(calc(-1 * var(--sidebar-width)));
 }
 
 .sidebar-header {
@@ -431,6 +440,23 @@ body.theme-light .modal-content .form-group select {
 
 /* Responsive design */
 @media (max-width: 768px) {
+  :root {
+    --sidebar-width: 100vw;
+  }
+  .sidebar {
+    width: 100vw !important;
+  }
+  /* Place the toggle on top of the sidebar when open (and keep visible when closed) */
+  .sidebar-toggle {
+    position: fixed;
+    right: 0 !important;
+    left: auto !important;
+    width: 48px !important;
+    transform: none !important;
+  }
+  body.sidebar-closed .sidebar-toggle {
+    transform: none !important;
+  }
   .modal-content {
     margin: 10% auto;
     width: 95%;
