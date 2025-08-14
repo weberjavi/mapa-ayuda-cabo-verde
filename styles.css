@@ -322,17 +322,23 @@ body.sidebar-closed .sidebar-toggle {
 
 .sidebar-section {
   margin-top: 16px;
+  padding: 16px;
 }
 .sidebar-footer {
   margin-top: auto;
   display: flex;
+  padding: 0;
   flex-direction: row;
   border-top: 1px solid white;
   border-bottom: 1px solid white;
   gap: 2px;
   background: white;
 }
-.sidebar-section h4 {
+
+.sidebar-legend {
+  padding: 16px;
+}
+s .sidebar-section h4 {
   margin: 0 0 8px 0;
   color: #ffffff;
 }
@@ -459,4 +465,9 @@ body.theme-light .modal-content .form-group select {
   font-size: 12px;
   max-width: 200px;
   word-wrap: break-word;
+}
+
+/* Legend spacing */
+#sidebar-legend ul li {
+  padding-top: 10px;
 }

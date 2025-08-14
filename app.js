@@ -124,14 +124,23 @@ class CaboVerdeMap {
       if (sidebarContentToggle) {
         const infoEl = document.getElementById("sidebar-info");
         const legendEl = document.getElementById("sidebar-legend");
-        // Build legend once
+        // Build legend once from modal select
         if (legendEl && !legendEl.innerHTML) {
-          const categories = Object.keys(CATEGORY_NAMES || {});
+          const select = document.getElementById("category");
+          const categories = select
+            ? Array.from(select.options)
+                .map((o) => (o.text || o.value || "").trim())
+                .filter((v) => v && v !== "Seleccionar categoría")
+            : [];
+          const seen = new Set();
+          const uniqueCategories = categories.filter((c) =>
+            seen.has(c) ? false : (seen.add(c), true)
+          );
           const list = document.createElement("ul");
           list.style.listStyle = "none";
           list.style.margin = "0";
           list.style.padding = "0";
-          categories.forEach((key) => {
+          uniqueCategories.forEach((name) => {
             const li = document.createElement("li");
             li.style.display = "flex";
             li.style.alignItems = "center";
@@ -142,14 +151,13 @@ class CaboVerdeMap {
             swatch.style.width = "14px";
             swatch.style.height = "14px";
             swatch.style.borderRadius = "50%";
-            const col = (CONFIG.CATEGORY_COLORS &&
-              CONFIG.CATEGORY_COLORS[key]) ||
+            const col = this.getCategoryColor(name) ||
               CONFIG.DEFAULT_COLOR || [120, 120, 120, 180];
             swatch.style.backgroundColor = `rgba(${col[0]},${col[1]},${
               col[2]
             },${(col[3] || 180) / 255})`;
             const label = document.createElement("span");
-            label.textContent = CATEGORY_NAMES[key] || key;
+            label.textContent = name;
             li.appendChild(swatch);
             li.appendChild(label);
             list.appendChild(li);
@@ -317,7 +325,39 @@ class CaboVerdeMap {
   }
 
   getCategoryColor(category) {
-    return CONFIG.CATEGORY_COLORS[category] || CONFIG.DEFAULT_COLOR;
+    const configured =
+      CONFIG.CATEGORY_COLORS && CONFIG.CATEGORY_COLORS[category];
+    if (configured) return configured;
+    const hue = this.stringToHue(category || "");
+    const [r, g, b] = this.hslToRgb(hue / 360, 0.55, 0.55);
+    return [r, g, b, 180];
+  }
+
+  stringToHue(str) {
+    let hash = 0;
+    const s = String(str);
+    for (let i = 0; i < s.length; i++)
+      hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
+    return hash % 360;
+  }
+
+  hslToRgb(h, s, l) {
+    if (s === 0) {
+      const v = Math.round(l * 255);
+      return [v, v, v];
+    }
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    const tc = [h + 1 / 3, h, h - 1 / 3];
+    const rgb = tc.map((t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    });
+    return rgb.map((v) => Math.round(v * 255));
   }
 
   getTooltip({ object }) {

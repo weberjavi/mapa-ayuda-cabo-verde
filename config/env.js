@@ -27,17 +27,26 @@ const CONFIG = {
 
   // Category colors for map markers
   CATEGORY_COLORS: {
-    hospital: [220, 53, 69, 180], // Red
-    escuela: [40, 167, 69, 180], // Green
-    centro_comunitario: [255, 193, 7, 180], // Yellow
-    refugio: [108, 117, 125, 180], // Gray
-    agua: [23, 162, 184, 180], // Cyan
-    alimentos: [255, 133, 27, 180], // Orange
-    otro: [111, 66, 193, 180], // Purple
+    "Labores de Limpieza": [59, 130, 246, 200], // Vivid blue
+    "Faltan energía": [245, 158, 11, 200], // Amber
+    "Faltan agua": [16, 185, 129, 200], // Emerald
+    "Faltan transporte": [99, 102, 241, 200], // Indigo
+    "Faltan comunicaciones": [236, 72, 153, 200], // Pink
+    "Faltan servicios": [234, 179, 8, 200], // Gold
+    "Alojamiento temporal": [168, 85, 247, 200], // Purple
+    "Necesidad de suministros y material": [2, 132, 199, 200], // Sky blue
+    "Equipo de rescate (evacuación)": [239, 68, 68, 200], // Red
+    "Asistencia médica": [244, 63, 94, 200], // Rose
+    "Apoyo psicológico": [20, 184, 166, 200], // Teal
+    "Apoyo logístico": [34, 197, 94, 200], // Green
+    "Maquinaria para movilidad reducida": [234, 88, 12, 200], // Orange
+    "Maquinaria pesada (grúas, palas, ...)": [217, 119, 6, 200], // Deep orange
+    "Contenedores de Escombros": [71, 85, 105, 200], // Slate
+    "Ayuda general": [15, 118, 110, 200], // Dark teal
   },
 
   // Default marker color for unknown categories
-  DEFAULT_COLOR: [108, 117, 125, 180], // Gray
+  DEFAULT_COLOR: [107, 114, 128, 200], // Gray (slightly stronger alpha)
 
   // Marker size
   MARKER_SIZE: 100,
