@@ -33,8 +33,8 @@ class CaboVerdeMap {
     ];
     // Max panning bounds (restrict map movement)
     const MAX_BOUNDS = [
-      [-25.649277391775684, 14.464734909097018], // SW
-      [-22.30069985150439, 17.37026778939078], // NE
+      [-29.823669573774595, 10.709360169832735], // SW
+      [-17.85710795955933, 20.458434734525298], // NE
     ];
 
     // Initialize MapLibre GL map
