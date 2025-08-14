@@ -213,10 +213,20 @@ form {
 /* Sidebar */
 .sidebar-toggle {
   position: absolute;
-  top: 20px;
+  top: 0;
   left: 320px;
   z-index: 1200;
   transition: transform 0.3s ease;
+  background: white;
+  color: black;
+  height: 53px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.sidebar-toggle:hover {
+  background: #f0f0f0;
 }
 
 .sidebar {
