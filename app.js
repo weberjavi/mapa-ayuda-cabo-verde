@@ -191,7 +191,7 @@ class CaboVerdeMap {
             // turn off
             autoRefreshBtn.dataset.active = "false";
             autoRefreshBtn.style.opacity = "0.6";
-            autoRefreshBtn.style.animation = "";
+            autoRefreshBtn.style.color = "";
             if (autoRefreshTimer) {
               clearInterval(autoRefreshTimer);
               autoRefreshTimer = null;
@@ -200,9 +200,7 @@ class CaboVerdeMap {
             // turn on
             autoRefreshBtn.dataset.active = "true";
             autoRefreshBtn.style.opacity = "1";
-            // subtle pulse while waiting for response
-            autoRefreshBtn.style.animation =
-              "subtlePulse 1.6s ease-in-out infinite";
+            autoRefreshBtn.style.color = "#22c55e"; // green when active
             if (autoRefreshTimer) {
               clearInterval(autoRefreshTimer);
             }
@@ -211,8 +209,6 @@ class CaboVerdeMap {
             }, 30000);
             // immediate fetch once
             await this.loadData();
-            // stop pulsing once data returned
-            autoRefreshBtn.style.animation = "";
           }
         });
         autoRefreshBtn.style.opacity = "0.6"; // inactive by default
