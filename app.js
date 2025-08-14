@@ -259,7 +259,7 @@ class CaboVerdeMap {
         radiusMaxPixels: 20,
         getPosition: (d) => [parseFloat(d.longitude), parseFloat(d.latitude)],
         getRadius: (d) => {
-          const base = 4;
+          const base = 8;
           const pulse = 6 * (0.5 + 0.5 * Math.sin(this.animationTick));
           return base + pulse;
         },
