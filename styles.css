@@ -360,6 +360,17 @@ body.sidebar-closed .sidebar-toggle {
   background: white;
 }
 
+/* Sidebar small switch */
+.sidebar-switch {
+  width: 50px;
+  padding: 0;
+  height: 50px;
+  border-radius: 0;
+  background: #1f1f21;
+  color: #e6e6e6;
+  font-family: monospace;
+}
+
 .sidebar-legend {
   padding: 16px;
 }
@@ -500,6 +511,19 @@ body.theme-light .modal-content .form-group select {
 /* Hide loading when data is loaded */
 .loaded .loading {
   display: none;
+}
+
+/* Subtle pulse for auto-refresh button while waiting */
+@keyframes subtlePulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }
 
 /* Map tooltip styles */

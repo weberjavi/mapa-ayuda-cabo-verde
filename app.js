@@ -7,6 +7,8 @@ class CaboVerdeMap {
     this.map = null;
     this.data = [];
     this.isLoading = true;
+    this.hasLoadedOnce = false;
+    this.isFetching = false;
     this.blinkData = [];
     this.animationTick = 0;
     this._animRaf = null;
@@ -83,6 +85,8 @@ class CaboVerdeMap {
       const sidebarContentToggle = document.getElementById(
         "sidebar-content-toggle"
       );
+      const autoRefreshBtn = document.getElementById("auto-refresh-toggle");
+      let autoRefreshTimer = null;
       let isSatellite = false;
       const handleBaseToggle = () => {
         isSatellite = !isSatellite;
@@ -178,6 +182,42 @@ class CaboVerdeMap {
         });
       }
 
+      // Auto-refresh toggle (poll every 30s)
+      if (autoRefreshBtn) {
+        autoRefreshBtn.dataset.active = "false";
+        autoRefreshBtn.addEventListener("click", async () => {
+          const active = autoRefreshBtn.dataset.active === "true";
+          if (active) {
+            // turn off
+            autoRefreshBtn.dataset.active = "false";
+            autoRefreshBtn.style.opacity = "0.6";
+            autoRefreshBtn.style.animation = "";
+            if (autoRefreshTimer) {
+              clearInterval(autoRefreshTimer);
+              autoRefreshTimer = null;
+            }
+          } else {
+            // turn on
+            autoRefreshBtn.dataset.active = "true";
+            autoRefreshBtn.style.opacity = "1";
+            // subtle pulse while waiting for response
+            autoRefreshBtn.style.animation =
+              "subtlePulse 1.6s ease-in-out infinite";
+            if (autoRefreshTimer) {
+              clearInterval(autoRefreshTimer);
+            }
+            autoRefreshTimer = setInterval(() => {
+              this.loadData();
+            }, 30000);
+            // immediate fetch once
+            await this.loadData();
+            // stop pulsing once data returned
+            autoRefreshBtn.style.animation = "";
+          }
+        });
+        autoRefreshBtn.style.opacity = "0.6"; // inactive by default
+      }
+
       // Load initial data after overlay is ready
       this.loadData();
     });
@@ -185,6 +225,7 @@ class CaboVerdeMap {
 
   async loadData() {
     try {
+      this.isFetching = true;
       if (CONFIG.USE_SAMPLE_DATA) {
         this.data = Array.isArray(window.SAMPLE_DATA) ? window.SAMPLE_DATA : [];
         this.computeBlinkData();
@@ -215,8 +256,12 @@ class CaboVerdeMap {
       this.updateMapLayers();
       this.stopAnimation();
     } finally {
-      // Hide loading indicator after data is loaded (or failed to load)
-      this.hideLoading();
+      this.isFetching = false;
+      // Hide loading indicator only on first load
+      if (!this.hasLoadedOnce) {
+        this.hideLoading();
+        this.hasLoadedOnce = true;
+      }
     }
   }
 
