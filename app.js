@@ -239,7 +239,7 @@ class CaboVerdeMap {
         // Radius based on number of affected people: 2px .. 8px
         // Use a logarithmic scale for robustness across wide ranges
         const personas = Number(d.personas || d.persons || d.people || 0);
-        if (!isFinite(personas) || personas <= 0) return 2;
+        if (!isFinite(personas) || personas <= 0) return 4;
         const r = 2 + Math.min(6, Math.log10(personas + 1) * 6);
         return r;
       },
