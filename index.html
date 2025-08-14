@@ -18,6 +18,15 @@
     <div id="map-container">
       <div id="map"></div>
 
+      <!-- Sidebar toggle -->
+      <button
+        id="sidebar-toggle"
+        class="btn btn-secondary sidebar-toggle"
+        aria-label="Abrir panel"
+      >
+        ☰ Menú
+      </button>
+
       <!-- Basemap toggle -->
       <div class="basemap-toggle">
         <button id="toggle-basemap" class="btn btn-secondary">Satélite</button>
@@ -109,13 +118,56 @@
         </div>
       </div>
 
-      <!-- Instructions -->
-      <div id="instructions" class="instructions">
-        <p>
-          <strong>Instrucciones:</strong> Haz doble clic en cualquier lugar del
-          mapa para agregar una nueva ubicación.
-        </p>
-      </div>
+      <!-- Sidebar -->
+      <aside id="sidebar" class="sidebar" aria-hidden="true">
+        <div class="sidebar-header">
+          <h3>Información</h3>
+          <button
+            id="sidebar-close"
+            class="btn btn-secondary"
+            aria-label="Cerrar panel"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="sidebar-content">
+          <section class="sidebar-section">
+            <h4>Instrucciones</h4>
+            <ul>
+              <li>Haz doble clic en el mapa para proponer una ubicación.</li>
+              <li>Completa los campos del formulario y envía.</li>
+              <li>Usa el botón "Satélite" para cambiar el mapa base.</li>
+            </ul>
+          </section>
+          <section class="sidebar-section">
+            <h4>Créditos</h4>
+            <p>Mapa por la comunidad. Base: MapLibre GL + DeckGL.</p>
+          </section>
+          <section class="sidebar-section">
+            <h4>Enlaces útiles</h4>
+            <ul>
+              <li>
+                <a href="https://maplibre.org/" target="_blank" rel="noopener"
+                  >MapLibre</a
+                >
+              </li>
+              <li>
+                <a href="https://deck.gl/" target="_blank" rel="noopener"
+                  >DeckGL</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.netlify.com/"
+                  target="_blank"
+                  rel="noopener"
+                  >Netlify</a
+                >
+              </li>
+            </ul>
+          </section>
+        </div>
+      </aside>
     </div>
 
     <!-- Scripts -->
