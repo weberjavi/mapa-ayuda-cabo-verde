@@ -410,6 +410,12 @@ class CaboVerdeMap {
     return {
       html: `
                 <div>
+                <div style="height: 3px; width: 100%; background-color: rgb(${this.getCategoryColor(
+                  object.category
+                )
+                  .slice(0, 3)
+                  .join(",")});"></div>
+                <div>
                     <strong>${esc(object.name)}</strong><br/>
                     <em>${esc(categoryName)}</em><br/>
                     ${
@@ -417,9 +423,6 @@ class CaboVerdeMap {
                         ? `<p>${esc(object.description)}</p>`
                         : ""
                     }
-                    <small>Lat: ${parseFloat(object.latitude).toFixed(
-                      4
-                    )}, Lng: ${parseFloat(object.longitude).toFixed(4)}</small>
                 </div>
             `,
     };
