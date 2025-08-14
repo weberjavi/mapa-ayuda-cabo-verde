@@ -277,15 +277,15 @@ class CaboVerdeMap {
     // Sidebar toggle
     const sidebar = document.getElementById("sidebar");
     const openBtn = document.getElementById("sidebar-toggle");
-    const closeBtn = document.getElementById("sidebar-close");
+    const sidebarCloseBtn = document.getElementById("sidebar-close");
     if (openBtn && sidebar) {
       openBtn.addEventListener("click", () => {
         sidebar.classList.add("open");
         sidebar.setAttribute("aria-hidden", "false");
       });
     }
-    if (closeBtn && sidebar) {
-      closeBtn.addEventListener("click", () => {
+    if (sidebarCloseBtn && sidebar) {
+      sidebarCloseBtn.addEventListener("click", () => {
         sidebar.classList.remove("open");
         sidebar.setAttribute("aria-hidden", "true");
       });
