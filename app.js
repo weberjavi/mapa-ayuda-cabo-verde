@@ -334,12 +334,13 @@ class CaboVerdeMap {
       this.blinkData = [];
       return;
     }
-    // Blink all high-priority locations
+    // Blink all high-priority locations (support multiple field names)
     this.blinkData = this.data.filter((d) => {
-      const p = String(d.prioridade || "")
+      const raw = d.prioridade ?? d.prioridad ?? d.priority ?? d.priority_level;
+      const p = String(raw || "")
         .toLowerCase()
         .trim();
-      return p === "alta";
+      return p === "alta" || p === "high";
     });
   }
 
