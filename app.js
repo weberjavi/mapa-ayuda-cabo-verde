@@ -255,7 +255,7 @@ class CaboVerdeMap {
         stroked: false,
         filled: true,
         radiusScale: 1,
-        radiusMinPixels: 4,
+        radiusMinPixels: 12,
         radiusMaxPixels: 20,
         getPosition: (d) => [parseFloat(d.longitude), parseFloat(d.latitude)],
         getRadius: (d) => {
@@ -289,27 +289,13 @@ class CaboVerdeMap {
       this.blinkData = [];
       return;
     }
-    // Prefer entries with valid timestamps, oldest first
-    const withTime = [];
-    const withoutTime = [];
-    for (let i = 0; i < this.data.length; i++) {
-      const d = this.data[i];
-      const t = Date.parse(d.timestamp);
-      if (!isNaN(t)) withTime.push({ d, t });
-      else withoutTime.push({ d, idx: i });
-    }
-    let selected = [];
-    if (withTime.length >= 3) {
-      withTime.sort((a, b) => a.t - b.t);
-      selected = withTime.slice(0, 3).map((x) => x.d);
-    } else {
-      // Fill from withTime then from earliest rows
-      selected = withTime.sort((a, b) => a.t - b.t).map((x) => x.d);
-      for (let i = 0; i < withoutTime.length && selected.length < 3; i++) {
-        selected.push(withoutTime[i].d);
-      }
-    }
-    this.blinkData = selected;
+    // Blink all high-priority locations
+    this.blinkData = this.data.filter((d) => {
+      const p = String(d.prioridade || d.prioridad || "")
+        .toLowerCase()
+        .trim();
+      return p === "alta";
+    });
   }
 
   startAnimation() {
